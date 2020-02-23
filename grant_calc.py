@@ -13,9 +13,9 @@ def current_round():
     year = time_date.strftime("%Y")
     y = 2000  # dummy leap year to allow input X-02-29 (leap day)
     rounds = [(f"{year}.1", (date(y, 1, 1), date(y, 2, 29))),
-              (f"{year}.2", (date(y, 3, 21), date(y, 6, 1))),
-              (f"{year}.3", (date(y, 6, 21), date(y, 9, 22))),
-              (f"{year}.4", (date(y, 9, 23), date(y, 12, 20))),
+              (f"{year}.2", (date(y, 3, 1), date(y, 5, 31))),
+              (f"{year}.3", (date(y, 6, 1), date(y, 8, 31))),
+              (f"{year}.4", (date(y, 9, 1), date(y, 11, 30))),
               (f"{year}.1", (date(y, 12, 1), date(y, 12, 31)))]
 
     def get_round(now):
