@@ -84,21 +84,58 @@ def activation_block():
 
 
 def daily_grant_pool_contribution():
-    """Determines daily grant pool contribution from Luciap.ca authority set datapoint"""
+    """Determines daily grant pool contribution from Luciap.ca authority set datapoint and "Shadow nodes" """
     url = "https://luciap.ca/api/v1/authority-set/summary"
     response = requests.get(url)
     authority_set = response.json()
-    grant_pool_per_day = 0
-    for factoidsPerDay in authority_set:
-        try:
-            if factoidsPerDay['entity']['disabled']:  # Removes any disabled entities
-                pass
-            else:
-                pass
-        except:  # adds all calculated grant pool contributions
-            sumdata = factoidsPerDay['factoidsPerDay']['grantPool']
-            grant_pool_per_day += sumdata
-    return grant_pool_per_day
+    auth_fct = 73000
+    auth_nodes = 65
+    average_days_in_month = 30.44
+
+    def Payment_Per_Node():
+        payment = (auth_fct / auth_nodes) / average_days_in_month
+        return payment
+
+    def Sum_of_Nodes():
+        sum_nodes = 0
+        for factoidsPerDay in authority_set:
+            try:
+                if factoidsPerDay['entity']['disabled']:  # Removes any disabled entities
+                    pass
+                else:
+                    pass
+            except:  # adds all active authority nodes
+                sum_nodes += 1  # Calculates the number of active nodes
+        return sum_nodes
+
+    def ANO_Contribution():
+        """Returns the daily contribution of the all ANOs"""
+        grant_pool_per_day = 0
+        ano_per_day = 0
+        for factoidsPerDay in authority_set:
+            try:
+                if factoidsPerDay['entity']['disabled']:  # Removes any disabled entities
+                    pass
+                else:
+                    pass
+            except:  # adds all calculated grant pool contributions
+                sumdata = factoidsPerDay['factoidsPerDay']['grantPool']
+                grant_pool_per_day += sumdata
+                anos = factoidsPerDay['factoidsPerDay']['ano']
+                ano_per_day += anos
+        return grant_pool_per_day
+
+    def Shadow_Nodes():
+        """Returns the number of non-existent nodes out of the 65 total"""
+        shadow_nodes = auth_nodes - Sum_of_Nodes()
+        return shadow_nodes
+
+    def Shadow_Node_Contribution():
+        """Returns the daily contribution of all Shadow Nodes"""
+        contribution = Shadow_Nodes() * Payment_Per_Node()
+        return contribution
+
+    return ANO_Contribution() + Shadow_Node_Contribution()
 
 
 def grant_pool_contribution_at_payout_block():
